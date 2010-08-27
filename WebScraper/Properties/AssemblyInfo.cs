@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WebScraper")]
-[assembly: AssemblyDescription("Web Scraper Framework")]
+[assembly: AssemblyTitle("WebScraper.NET")]
+[assembly: AssemblyDescription(".NET based Web Scraper Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BillShrink Inc")]
-[assembly: AssemblyProduct("WebScraper")]
+[assembly: AssemblyProduct("WebScraper.NET")]
 [assembly: AssemblyCopyright("Copyright © BillShrink 2010")]
 [assembly: AssemblyTrademark("billshrink")]
 [assembly: AssemblyCulture("")]
