@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScraper", "WebScraper\WebScraper.csproj", "{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
