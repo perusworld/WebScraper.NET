@@ -88,6 +88,7 @@ namespace WebScraper.Web
     public class IdElementLocator : HtmlElementLocator
     {
         public string Id { get; set; }
+        public ElementMatcher<HtmlElement> Matcher { get; set; }
 
         public IdElementLocator()
             : base()
@@ -95,10 +96,11 @@ namespace WebScraper.Web
 
         }
 
-        public IdElementLocator(string name = null, string id = null, String contextKey = null)
+        public IdElementLocator(string name = null, string id = null, String contextKey = null, ElementMatcher<HtmlElement> matcher = null)
             : base(name, contextKey)
         {
             this.Id = id;
+            this.Matcher = matcher;
         }
 
         public override HtmlElement internalLocate(Agent agent)
@@ -107,6 +109,13 @@ namespace WebScraper.Web
             if (null != agent && null != agent.WebBrowser.Document)
             {
                 ret = agent.WebBrowser.Document.GetElementById(Id);
+            }
+            if (null != ret && null != Matcher)
+            {
+                if (!Matcher.match(ret))
+                {
+                    ret = null;
+                }
             }
             return ret;
         }
@@ -144,7 +153,6 @@ namespace WebScraper.Web
                 {
                     foreach (HtmlElement element in elements)
                     {
-                        Console.WriteLine(element.GetAttribute("class"));
                         if (null == Matcher || Matcher.match(element))
                         {
                             if (null == ChildLocator)

@@ -23,4 +23,8 @@ namespace WebScraper.Web
     {
         V extract(T element);
     }
+    public enum ElementTarget
+    {
+        SELF, CHILDREN, ALL_CHILDREN
+    }
 }

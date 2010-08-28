@@ -49,6 +49,17 @@ namespace WebScraper.Web
         public virtual void startAgent()
         {
             doActions();
+            completedActions();
+        }
+
+        public virtual void completedActions()
+        {
+
+        }
+
+        public virtual void cleanup()
+        {
+
         }
 
         public virtual void doActions()

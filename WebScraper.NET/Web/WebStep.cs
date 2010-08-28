@@ -214,56 +214,50 @@ namespace WebScraper.Web
     }
     public class MonitorWebStep : AbstractWebStep
     {
-        Agent Browser;
         public int SleepTime { get; set; }
         public int MaxCount { get; set; }
         public WebValidator Validator { get; set; }
-        public WebCallback WebCallback { get; set; }
-
-
         public MonitorWebStep()
             : base()
         {
 
         }
-        public MonitorWebStep(String name = null, int sleepTime = 500, int maxCount = 120, WebValidator validator = null, WebCallback webCallback = null)
+        public MonitorWebStep(String name = null, int sleepTime = 500, int maxCount = 120, WebValidator validator = null)
             : base(name)
         {
             this.SleepTime = sleepTime;
             this.MaxCount = maxCount;
             this.Validator = validator;
-            this.WebCallback = webCallback;
-        }
-        public void run()
-        {
-            int count = 0;
-            bool done = false;
-            while (!done && count < MaxCount)
-            {
-                Thread.Sleep(SleepTime);
-                try
-                {
-                    if (Validator.validate(Browser))
-                    {
-                        done = true;
-                        Console.WriteLine("Thread Completed");
-                        WebCallback.callback(Browser);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Thread Started");
-                    }
-                }
-                catch (Exception e)
-                {
-                }
-                count++;
-            }
         }
         public override void internalExecute(Agent agent)
         {
-            this.Browser = agent;
-            new Thread(this.run).Start();
+            int count = 0;
+            bool done = false;
+            MethodInvoker delegateCall = delegate
+            {
+                if (Validator.validate(agent))
+                {
+                    done = true;
+                    Console.WriteLine("Thread Completed");
+                }
+                else
+                {
+                    Console.WriteLine("Thread Started");
+                }
+            };
+            while (!done && count < MaxCount)
+            {
+                Thread.Sleep(SleepTime);
+                if (agent.WebBrowser.InvokeRequired)
+                {
+                    agent.WebBrowser.Invoke(delegateCall);
+                }
+                else
+                {
+                    delegateCall();
+                }
+                count++;
+            }
         }
         public override bool validate(Agent agent)
         {

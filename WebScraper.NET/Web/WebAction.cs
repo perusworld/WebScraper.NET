@@ -70,6 +70,7 @@ namespace WebScraper.Web
         {
             Extractor = extractor;
             ContextKey = contextKey;
+            Locator = locator;
         }
         public override void doAction(Agent agent)
         {

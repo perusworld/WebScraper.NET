@@ -64,6 +64,27 @@ namespace WebScraper.Web
         }
 
     }
+    public class LocatorCheckValidator : AbstractWebValidator
+    {
+        public HtmlElementLocator Locator { get; set; }
+        public LocatorCheckValidator()
+        {
+
+        }
+        public LocatorCheckValidator(HtmlElementLocator locator = null)
+        {
+            Locator = locator;
+        }
+        public override bool internalValidate(Agent agent)
+        {
+            bool ret = false;
+            HtmlElement element = Locator.locate(agent);
+            ret = null != element;
+            return ret;
+        }
+
+    }
+
     public class ValueCheckValidator : AbstractWebValidator
     {
         public HtmlElementLocator Locator { get; set; }
@@ -118,44 +139,38 @@ namespace WebScraper.Web
         }
     }
 
-    public class BackgroundStyleCheckValidator : AbstractWebValidator
+    public class StyleCheckValidator : AbstractWebValidator
     {
         public HtmlElementLocator Locator { get; set; }
-        public string StyleValue { get; set; }
-        public BackgroundStyleCheckValidator(HtmlElementLocator locator = null, string styleValue = null)
+        public string Value { get; set; }
+        public Regex ValueRegex { get; set; }
+        public StyleCheckValidator(HtmlElementLocator locator = null, string value = null, Regex valueRegex = null)
         {
             this.Locator = locator;
-            this.StyleValue = styleValue;
+            this.Value = value;
+            this.ValueRegex = valueRegex;
         }
         public override bool internalValidate(Agent agent)
         {
             bool ret = false;
-            MethodInvoker delegateCall = delegate
+            if (null != Locator)
             {
-                if (null != Locator)
+                HtmlElement element = Locator.locate(agent);
+                if (null != element)
                 {
-                    HtmlElement element = Locator.locate(agent);
-                    if (null != element)
+                    String value = element.Style;
+                    if (null != value)
                     {
-                        String value = element.Style;
-                        if (null == StyleValue && null == value)
+                        if (null == ValueRegex)
                         {
-                            ret = true;
+                            ret = value.Equals(Value);
                         }
                         else
                         {
-                            ret = value.Equals(StyleValue);
+                            ret = ValueRegex.IsMatch(value);
                         }
                     }
                 }
-            };
-            if (agent.WebBrowser.InvokeRequired)
-            {
-                agent.WebBrowser.Invoke(delegateCall);
-            }
-            else
-            {
-                delegateCall();
             }
             return ret;
         }

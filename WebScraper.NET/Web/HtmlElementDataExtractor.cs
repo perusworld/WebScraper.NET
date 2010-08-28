@@ -18,7 +18,7 @@ namespace WebScraper.Web
         public abstract V extract(HtmlElement element);
     }
 
-    public class StringHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<String>
+    public class StringHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<string>
     {
         public string Part { get; set; }
         public StringHtmlElementDataExtractor()
@@ -30,7 +30,7 @@ namespace WebScraper.Web
         {
             Part = part;
         }
-        public override String extract(HtmlElement element)
+        public override string extract(HtmlElement element)
         {
             string ret = null;
             if (null != element)
@@ -65,27 +65,38 @@ namespace WebScraper.Web
     {
         public ElementMatcher<HtmlElement> Matcher { get; set; }
         public HtmlElementDataExtractor<V> Extractor { get; set; }
-        public bool AllNodes { get; set; }
+        public ElementTarget Target { get; set; }
         public ListHtmlElementDataExtractor()
             : base()
         {
 
         }
-        public ListHtmlElementDataExtractor(ElementMatcher<HtmlElement> matcher = null, bool allNodes = false)
+        public ListHtmlElementDataExtractor(ElementMatcher<HtmlElement> matcher = null, ElementTarget target = ElementTarget.SELF, HtmlElementDataExtractor<V> extractor = null)
         {
             Matcher = matcher;
-            AllNodes = allNodes;
+            Target = target;
+            Extractor = extractor;
         }
         public override List<V> extract(HtmlElement element)
         {
             List<V> ret = new List<V>();
-            foreach (HtmlElement childNode in AllNodes ? element.All : element.Children)
+            if (Target.Equals(ElementTarget.SELF))
             {
-                if (null != Matcher && !Matcher.match(childNode))
+                if (null == Matcher || Matcher.match(element))
                 {
-                    continue;
+                    ret.Add(Extractor.extract(element));
                 }
-                ret.Add(Extractor.extract(childNode));
+            }
+            else
+            {
+                foreach (HtmlElement childNode in Target.Equals(ElementTarget.ALL_CHILDREN) ? element.All : element.Children)
+                {
+                    if (null != Matcher && !Matcher.match(childNode))
+                    {
+                        continue;
+                    }
+                    ret.Add(Extractor.extract(childNode));
+                }
             }
             return ret;
         }
