@@ -13,18 +13,15 @@ namespace WebScraper.Web
 
         public string Name { get; set; }
 
-        public List<WebAction> WebActions { get; set; }
-
         public WebBrowser WebBrowser { get; set; }
 
         public Dictionary<String, Object> RequestContext { get; set; }
 
         public Dictionary<String, Object> Outputs { get; set; }
 
-        protected Queue<WebAction> activeActions;
-
         protected WebAction activeAction;
 
+        protected WebBrowserDocumentCompletedEventHandler completedEventHandler;
 
         protected AutoResetEvent trigger;
 
@@ -34,36 +31,26 @@ namespace WebScraper.Web
         {
         }
 
+        public Agent(WebBrowser browser = null)
+        {
+            this.WebBrowser = browser;
+        }
+
+
         public virtual void init()
         {
             RequestContext = new Dictionary<string, object>();
             Outputs = new Dictionary<string, object>();
-            activeActions = new Queue<WebAction>(WebActions);
-            WebBrowser.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
+            completedEventHandler = new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
+            WebBrowser.DocumentCompleted += completedEventHandler;
             trigger = new AutoResetEvent(false);
-
             waitHandles = new WaitHandle[] { trigger };
 
         }
 
-        public virtual void startAgent()
+        public virtual void doActions(List<WebAction> actions)
         {
-            doActions();
-            completedActions();
-        }
-
-        public virtual void completedActions()
-        {
-
-        }
-
-        public virtual void cleanup()
-        {
-
-        }
-
-        public virtual void doActions()
-        {
+            Queue<WebAction> activeActions = new Queue<WebAction>(actions);
             while (0 < activeActions.Count)
             {
                 activeAction = activeActions.Dequeue();
@@ -77,6 +64,17 @@ namespace WebScraper.Web
                     }
                 }
             }
+            completedActions();
+        }
+
+        public virtual void completedActions()
+        {
+            WebBrowser.DocumentCompleted -= completedEventHandler;
+        }
+
+        public virtual void cleanup()
+        {
+
         }
 
         public virtual void pageLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -89,8 +87,29 @@ namespace WebScraper.Web
 
     }
 
+    public class SimpleAgent : Agent
+    {
+        public List<WebAction> WebActions { get; set; }
 
-    public class PageDumpAgent : Agent
+        public SimpleAgent()
+            : base()
+        {
+
+        }
+        public SimpleAgent(WebBrowser browser = null, List<WebAction> actions = null)
+            : base(browser: browser)
+        {
+            this.WebActions = actions;
+        }
+
+        public virtual void startAgent()
+        {
+            doActions(WebActions);
+        }
+
+    }
+
+    public class PageDumpAgent : SimpleAgent
     {
     }
 

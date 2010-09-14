@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace WebScraper.Web
 {
@@ -11,26 +12,16 @@ namespace WebScraper.Web
     }
     public abstract class AbstractHtmlElementDataExtractor<V> : HtmlElementDataExtractor<V>
     {
+        public string Part { get; set; }
         public AbstractHtmlElementDataExtractor()
         {
 
         }
-        public abstract V extract(HtmlElement element);
-    }
-
-    public class StringHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<string>
-    {
-        public string Part { get; set; }
-        public StringHtmlElementDataExtractor()
-            : base()
+        public AbstractHtmlElementDataExtractor(string part = null)
         {
-
+            this.Part = part;
         }
-        public StringHtmlElementDataExtractor(string part = ":innertext")
-        {
-            Part = part;
-        }
-        public override string extract(HtmlElement element)
+        public string getString(HtmlElement element)
         {
             string ret = null;
             if (null != element)
@@ -54,6 +45,94 @@ namespace WebScraper.Web
                 else
                 {
                     ret = element.GetAttribute(Part);
+                }
+            }
+            return ret;
+        }
+        public abstract V extract(HtmlElement element);
+    }
+    public abstract class AbstractUrlHtmlElementDataExtractor<V> : HtmlElementDataExtractor<V>
+    {
+        public AbstractUrlHtmlElementDataExtractor()
+        {
+
+        }
+        public Uri getUrl(HtmlElement element)
+        {
+            Uri ret = null;
+            if (null != element)
+            {
+                ret = element.Document.Window.Url;
+            }
+            return ret;
+        }
+        public abstract V extract(HtmlElement element);
+    }
+
+    public class StringHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<string>
+    {
+        public StringHtmlElementDataExtractor()
+            : base()
+        {
+
+        }
+        public StringHtmlElementDataExtractor(string part = ":innertext")
+            : base(part: part)
+        {
+        }
+        public override string extract(HtmlElement element)
+        {
+            return getString(element);
+        }
+
+    }
+
+    public class BooleanHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<Boolean>
+    {
+        public BooleanHtmlElementDataExtractor()
+            : base()
+        {
+
+        }
+        public BooleanHtmlElementDataExtractor(string part = ":innertext")
+            : base(part: part)
+        {
+        }
+        public override Boolean extract(HtmlElement element)
+        {
+            Boolean ret = false;
+            String text = getString(element);
+            ret = (null != text && !text.Trim().ToLower().Equals("false"));
+            return ret;
+        }
+
+    }
+
+    public class BooleanUrlHtmlElementDataExtractor : AbstractUrlHtmlElementDataExtractor<Boolean>
+    {
+        public Regex Matcher { get; set; }
+        public Boolean ShouldMatch { get; set; }
+        public BooleanUrlHtmlElementDataExtractor()
+            : base()
+        {
+            ShouldMatch = true;
+        }
+        public BooleanUrlHtmlElementDataExtractor(Regex matcher = null, Boolean shouldMatch = true)
+            : base()
+        {
+            this.Matcher = matcher;
+            this.ShouldMatch = shouldMatch;
+        }
+        public override Boolean extract(HtmlElement element)
+        {
+            Boolean ret = false;
+            Uri url = getUrl(element);
+            if (null != Matcher)
+            {
+                ret = Matcher.IsMatch(url.ToString());
+                if (!ShouldMatch)
+                {
+                    ret = !ret;
                 }
             }
             return ret;

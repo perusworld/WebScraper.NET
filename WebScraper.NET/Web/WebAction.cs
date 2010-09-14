@@ -62,6 +62,7 @@ namespace WebScraper.Web
         public DataExtractor<HtmlElement, V> Extractor { get; set; }
         public HtmlElementLocator Locator { get; set; }
         public string ContextKey { get; set; }
+        public V ExtractedData { get; set; }
         public ExtractWebAction()
         {
 
@@ -78,6 +79,7 @@ namespace WebScraper.Web
             if (null != element)
             {
                 V data = Extractor.extract(element);
+                this.ExtractedData = data;
                 if (null != ContextKey && null != data)
                 {
                     agent.RequestContext.Add(ContextKey, data);
