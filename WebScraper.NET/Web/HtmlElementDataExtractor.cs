@@ -68,6 +68,23 @@ namespace WebScraper.Web
         }
         public abstract V extract(HtmlElement element);
     }
+    public abstract class AbstractCookieHtmlElementDataExtractor<V> : HtmlElementDataExtractor<V>
+    {
+        public AbstractCookieHtmlElementDataExtractor()
+        {
+
+        }
+        public String getCookie(HtmlElement element)
+        {
+            String ret = null;
+            if (null != element)
+            {
+                ret = element.Document.Cookie;
+            }
+            return ret;
+        }
+        public abstract V extract(HtmlElement element);
+    }
 
     public class StringHtmlElementDataExtractor : AbstractHtmlElementDataExtractor<string>
     {
@@ -130,6 +147,38 @@ namespace WebScraper.Web
             if (null != Matcher)
             {
                 ret = Matcher.IsMatch(url.ToString());
+                if (!ShouldMatch)
+                {
+                    ret = !ret;
+                }
+            }
+            return ret;
+        }
+
+    }
+
+    public class BooleanCookieHtmlElementDataExtractor : AbstractCookieHtmlElementDataExtractor<Boolean>
+    {
+        public Regex Matcher { get; set; }
+        public Boolean ShouldMatch { get; set; }
+        public BooleanCookieHtmlElementDataExtractor()
+            : base()
+        {
+            ShouldMatch = true;
+        }
+        public BooleanCookieHtmlElementDataExtractor(Regex matcher = null, Boolean shouldMatch = true)
+            : base()
+        {
+            this.Matcher = matcher;
+            this.ShouldMatch = shouldMatch;
+        }
+        public override Boolean extract(HtmlElement element)
+        {
+            Boolean ret = false;
+            String cookie = getCookie(element);
+            if (null != Matcher)
+            {
+                ret = Matcher.IsMatch(cookie);
                 if (!ShouldMatch)
                 {
                     ret = !ret;

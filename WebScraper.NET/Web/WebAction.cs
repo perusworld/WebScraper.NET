@@ -75,7 +75,16 @@ namespace WebScraper.Web
         }
         public override void doAction(Agent agent)
         {
-            HtmlElement element = Locator.locate(agent);
+            this.ExtractedData = default(V);
+            HtmlElement element = null;
+            if (null == Locator)
+            {
+                element = agent.WebBrowser.Document.Body;
+            }
+            else
+            {
+                element = Locator.locate(agent);
+            }
             if (null != element)
             {
                 V data = Extractor.extract(element);

@@ -41,8 +41,6 @@ namespace WebScraper.Web
         {
             RequestContext = new Dictionary<string, object>();
             Outputs = new Dictionary<string, object>();
-            completedEventHandler = new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
-            WebBrowser.DocumentCompleted += completedEventHandler;
             trigger = new AutoResetEvent(false);
             waitHandles = new WaitHandle[] { trigger };
 
@@ -50,6 +48,8 @@ namespace WebScraper.Web
 
         public virtual void doActions(List<WebAction> actions)
         {
+            completedEventHandler = new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
+            WebBrowser.DocumentCompleted += completedEventHandler;
             Queue<WebAction> activeActions = new Queue<WebAction>(actions);
             while (0 < activeActions.Count)
             {
