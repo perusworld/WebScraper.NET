@@ -13,6 +13,8 @@ namespace WebScraper.Web
 
         public string Name { get; set; }
 
+        public string DisplayName { get; set; }
+
         public WebBrowser WebBrowser { get; set; }
 
         public Dictionary<String, Object> RequestContext { get; set; }
