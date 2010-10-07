@@ -32,10 +32,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Logging">
-      <HintPath>..\..\..\..\..\..\..\bin\Spring.NET\bin\net\2.0\release\Common.Logging.dll</HintPath>
+      <HintPath>..\dependencies\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Core">
-      <HintPath>..\..\..\..\..\..\..\bin\Spring.NET\bin\net\2.0\release\Spring.Core.dll</HintPath>
+      <HintPath>..\dependencies\Spring.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
