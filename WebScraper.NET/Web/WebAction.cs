@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace WebScraper.Web
 {
@@ -12,6 +13,7 @@ namespace WebScraper.Web
         void doAction(Agent agent);
         bool validate(Agent agent);
         bool canDoAction(Agent agent);
+        bool shouldWaitAction(Agent agent);
     }
 
     public abstract class AbstractWebAction : WebAction
@@ -19,16 +21,18 @@ namespace WebScraper.Web
         public bool IsWaitForEvent { get; set; }
         public WebValidator Validator { get; set; }
         public WebValidator CanDoValidator { get; set; }
+        public WebValidator ShouldWaitValidator { get; set; }
         public AbstractWebAction()
         {
 
         }
 
-        public AbstractWebAction(bool waitForEvent = false, WebValidator validator = null, WebValidator canDoValidator = null)
+        public AbstractWebAction(bool waitForEvent = false, WebValidator validator = null, WebValidator canDoValidator = null, WebValidator shouldWaitValidator = null)
         {
             this.IsWaitForEvent = waitForEvent;
             Validator = validator;
             CanDoValidator = canDoValidator;
+            ShouldWaitValidator = shouldWaitValidator;
         }
 
         public bool isWaitForEvent()
@@ -52,6 +56,15 @@ namespace WebScraper.Web
             if (null != CanDoValidator)
             {
                 ret = CanDoValidator.validate(agent);
+            }
+            return ret;
+        }
+        public virtual bool shouldWaitAction(Agent agent)
+        {
+            bool ret = false;
+            if (null != ShouldWaitValidator)
+            {
+                ret = !ShouldWaitValidator.validate(agent);
             }
             return ret;
         }
@@ -104,8 +117,8 @@ namespace WebScraper.Web
         {
 
         }
-        public SimpleWebAction(WebStep step = null, WebValidator validator = null, WebValidator canDoValidator = null, bool waitForEvent = false)
-            : base(waitForEvent, validator, canDoValidator)
+        public SimpleWebAction(WebStep step = null, WebValidator validator = null, WebValidator canDoValidator = null, WebValidator shouldWaitValidator = null, bool waitForEvent = false)
+            : base(waitForEvent, validator, canDoValidator, shouldWaitValidator)
         {
             Step = step;
         }
@@ -114,6 +127,41 @@ namespace WebScraper.Web
             if (null != Step)
             {
                 Step.execute(agent);
+            }
+        }
+    }
+
+    public class TimedWebAction : AbstractWebAction
+    {
+        public System.Threading.Timer Timer { get; set; }
+        public TimedWebAction()
+        {
+
+        }
+        public TimedWebAction(WebValidator validator = null, WebValidator canDoValidator = null, WebValidator shouldWaitValidator = null, bool waitForEvent = false)
+            : base(waitForEvent, validator, canDoValidator, shouldWaitValidator)
+        {
+        }
+        public override void doAction(Agent agent)
+        {
+            bool ret = false;
+            ret = Validator.validate(agent);
+            if (!ret)
+            {
+                if (null == Timer)
+                {
+                    TimerCallback callback = timerCallback;
+                    Timer = new System.Threading.Timer(callback, agent, 500, 500);
+                }
+            }
+        }
+        public void timerCallback(Object argument)
+        {
+            if (Validator.validate((Agent)argument))
+            {
+                Timer.Dispose();
+                Timer = null;
+                ((Agent)argument).completedWaitAction();
             }
         }
     }

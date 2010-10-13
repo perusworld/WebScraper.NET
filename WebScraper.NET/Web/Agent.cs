@@ -58,6 +58,11 @@ namespace WebScraper.Web
                 activeAction = activeActions.Dequeue();
                 if (activeAction.canDoAction(this))
                 {
+                    if (activeAction.shouldWaitAction(this))
+                    {
+                        trigger.Reset();
+                        WaitHandle.WaitAny(waitHandles);
+                    }
                     activeAction.doAction(this);
                     if (activeAction.isWaitForEvent())
                     {
@@ -79,12 +84,25 @@ namespace WebScraper.Web
 
         }
 
-        public virtual void pageLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
+        public virtual void completedWaitAction()
         {
+            trigger.Set();
+        }
+
+        public virtual bool validateActiveAction()
+        {
+            bool ret = false;
             if (null != activeAction && activeAction.isWaitForEvent() && activeAction.validate(this))
             {
+                ret = true;
                 trigger.Set();
             }
+            return ret;
+        }
+
+        public virtual void pageLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            validateActiveAction();
         }
 
     }

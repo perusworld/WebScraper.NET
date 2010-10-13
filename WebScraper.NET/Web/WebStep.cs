@@ -264,6 +264,43 @@ namespace WebScraper.Web
             return null == Validator ? true : Validator.validate(agent);
         }
     }
-
+    public class TimedProxyWebStep : AbstractWebStep
+    {
+        public System.Threading.Timer Timer { get; set; }
+        public WebStep Step { get; set; }
+        public WebValidator Validator { get; set; }
+        public TimedProxyWebStep(WebStep webStep = null, WebValidator validator = null)
+            : base()
+        {
+            Step = webStep;
+            this.Validator = validator;
+        }
+        public override void internalExecute(Agent agent)
+        {
+            bool ret = false;
+            ret = Validator.validate(agent);
+            if (!ret)
+            {
+                if (null == Timer)
+                {
+                    TimerCallback callback = timerCallback;
+                    Timer = new System.Threading.Timer(callback, agent, 500, 500);
+                }
+            }
+        }
+        public override bool validate(Agent agent)
+        {
+            return null == Validator ? true : Validator.validate(agent);
+        }
+        public void timerCallback(Object argument)
+        {
+            if (Validator.validate((Agent)argument))
+            {
+                Timer.Dispose();
+                Timer = null;
+                Step.execute((Agent)argument);
+            }
+        }
+    }
 
 }

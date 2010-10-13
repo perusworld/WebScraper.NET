@@ -176,5 +176,38 @@ namespace WebScraper.Web
         }
     }
 
+    public class TimedProxyWebValidator : AbstractWebValidator
+    {
+        public WebValidator Validator { get; set; }
+        public System.Threading.Timer Timer { get; set; }
+        public TimedProxyWebValidator(WebValidator validator = null)
+        {
+            Validator = validator;
+        }
+        public override bool internalValidate(Agent agent)
+        {
+            bool ret = false;
+            ret = Validator.validate(agent);
+            if (!ret)
+            {
+                if (null == Timer)
+                {
+                    TimerCallback callback = timerCallback;
+                    Timer = new System.Threading.Timer(callback, agent, 500, 500);
+                }
+            }
+            return ret;
+        }
+        public void timerCallback(Object argument)
+        {
+            if (Validator.validate((Agent)argument))
+            {
+                Timer.Dispose();
+                Timer = null;
+                ((Agent)argument).completedWaitAction();
+            }
+        }
+    }
+
 
 }
