@@ -32,8 +32,11 @@ namespace WebScraper.Web
         public bool isLoggedIn()
         {
             bool ret = false;
-            if (null != LoginCheckAction)
+            if (null == LoginCheckAction)
             {
+                //if the login check is not present then it is a free resource
+                ret = true;
+            } else {
                 LoginCheckAction.doAction(this);
                 ret = LoginCheckAction.ExtractedData;
             }

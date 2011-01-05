@@ -159,9 +159,16 @@ namespace WebScraper.Web
         {
             if (Validator.validate((Agent)argument))
             {
-                Timer.Dispose();
-                Timer = null;
-                ((Agent)argument).completedWaitAction();
+                if (null == Timer)
+                {
+                    //NOOP
+                }
+                else
+                {
+                    Timer.Dispose();
+                    Timer = null;
+                    ((Agent)argument).completedWaitAction();
+                }
             }
         }
     }

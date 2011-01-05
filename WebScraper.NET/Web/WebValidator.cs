@@ -8,6 +8,8 @@ using System.Threading;
 
 namespace WebScraper.Web
 {
+    public delegate bool ValueValidateDelegate(String value);
+
     public interface WebValidator
     {
         bool validate(Agent agent);
@@ -141,14 +143,17 @@ namespace WebScraper.Web
 
     public class StyleCheckValidator : AbstractWebValidator
     {
+
         public HtmlElementLocator Locator { get; set; }
         public string Value { get; set; }
         public Regex ValueRegex { get; set; }
-        public StyleCheckValidator(HtmlElementLocator locator = null, string value = null, Regex valueRegex = null)
+        public ValueValidateDelegate CheckDelegate { get; set; }
+        public StyleCheckValidator(HtmlElementLocator locator = null, string value = null, Regex valueRegex = null, ValueValidateDelegate checkDelegate = null)
         {
             this.Locator = locator;
             this.Value = value;
             this.ValueRegex = valueRegex;
+            this.CheckDelegate = checkDelegate;
         }
         public override bool internalValidate(Agent agent)
         {
@@ -159,16 +164,23 @@ namespace WebScraper.Web
                 if (null != element)
                 {
                     String value = element.Style;
-                    if (null != value)
+                    if (null == CheckDelegate)
                     {
-                        if (null == ValueRegex)
+                        if (null != value)
                         {
-                            ret = value.Equals(Value);
+                            if (null == ValueRegex)
+                            {
+                                ret = value.Equals(Value);
+                            }
+                            else
+                            {
+                                ret = ValueRegex.IsMatch(value);
+                            }
                         }
-                        else
-                        {
-                            ret = ValueRegex.IsMatch(value);
-                        }
+                    }
+                    else
+                    {
+                        ret = CheckDelegate(value);
                     }
                 }
             }
