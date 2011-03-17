@@ -28,6 +28,7 @@ namespace WebScraper.Web
         public void doLogout()
         {
             doActions(LogoutActions);
+            cleanup();
         }
         public bool isLoggedIn()
         {
