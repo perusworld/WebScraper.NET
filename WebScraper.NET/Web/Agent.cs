@@ -46,9 +46,9 @@ namespace WebScraper.Web
             this.TimingInTicks += accessTiming.TimingInTicks;
         }
 
-        public int getTimingInSeconds()
+        public double getTimingInSeconds()
         {
-            return new TimeSpan(TimingInTicks).Seconds;
+            return new TimeSpan(TimingInTicks).TotalSeconds;
         }
 
 
@@ -80,6 +80,8 @@ namespace WebScraper.Web
         protected AutoResetEvent trigger;
 
         protected WaitHandle[] waitHandles;
+
+        public DateTime LastedUpdated { get; private set; }
 
         public Agent()
         {
@@ -171,6 +173,7 @@ namespace WebScraper.Web
             if (MonitorTimings)
             {
                 updateAccessTimings(e.Url);
+                LastedUpdated = DateTime.Now;
             }
         }
 
