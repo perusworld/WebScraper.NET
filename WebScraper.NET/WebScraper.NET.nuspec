@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Saravana Perumal Shanmugam</authors>
+    <owners>Saravana Perumal Shanmugam</owners>
+    <licenseUrl>https://raw.githubusercontent.com/perusworld/WebScraper.NET/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/perusworld/WebScraper.NET</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>First release.</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>WebBrowser Scraper</tags>
+  </metadata>
+</package>
