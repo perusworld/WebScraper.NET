@@ -15,14 +15,16 @@ Install-Package WebScraper.NET
 
 ### Sample Code
 
-Import Namespace
+Create a form with a WebBrowser control
+
+* Import Namespace
 ```c#
 using WebScraper.Web;
 ```
 
-Create a form with a WebBrowser control
+Implement the *AgentCallback* interface
 
-You need to build the actions that you want to do, for example
+* Build the actions that you want to do, for example
 ```c#
 List<WebAction> actions = new List<WebAction>();
 //goto home url - https://www.bing.com/
@@ -45,7 +47,7 @@ actions.Add(new ExtractWebAction<String>(new StringHtmlElementDataExtractor("hre
 actions.Add(new SimpleWebAction(new UrlWebStep("open search", "firstNavLink"), new TitleWebValidator("GitHub - perusworld/WebScraper.NET: A .Net based Web Scraper using the WebBrowser control"), waitForEvent: true));
 ```
 
-once the actions are added, initialize webbrowser and call the agent
+* Initialize and call the agent
 ```c#
 SimpleAgent bingSearchAgent = new SimpleAgent(webBrowser, actions);
 bingSearchAgent.AgentCallback = this;
@@ -53,7 +55,7 @@ bingSearchAgent.init();
 bingSearchAgent.startAgent();
 ```
 
-once the actions are done, the onCompleted AgentCallback will be called
+* once the actions are done, the onCompleted AgentCallback will be called
 ```c#
 public void onCompleted(Agent agent)
 {
