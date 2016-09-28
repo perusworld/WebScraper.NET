@@ -5,7 +5,7 @@
 The project is still in beta, i will graduate it once it reaches an acceptable state
 
 ## Example Usage
-You can run the [TestSampleSite.css](https://github.com/perusworld/WebScraper.NET/blob/master/WebScraper.NET%20Test/TestSampleSite.cs) in the Test project or the following
+You can run the [TestSampleSite.cs](https://github.com/perusworld/WebScraper.NET/blob/master/WebScraper.NET%20Test/TestSampleSite.cs) in the Test project or the following
 
 You need to build the actions that you want to do, for example
 ```c#
