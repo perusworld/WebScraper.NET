@@ -1,11 +1,26 @@
 # A .Net based Web Scraper using the WebBrowser control
 
-[![Build status](https://ci.appveyor.com/api/projects/status/imhrkqa17reo84kw?svg=true)](https://ci.appveyor.com/project/perusworld/webscraper-net)
+[![nuget][nuget-badge]][nuget-url] [![Build status](https://ci.appveyor.com/api/projects/status/imhrkqa17reo84kw?svg=true)](https://ci.appveyor.com/project/perusworld/webscraper-net)
+[nuget-badge]: https://img.shields.io/badge/nuget-v2.0.3-brightgreen.svg
+[nuget-url]: https://www.nuget.org/packages/WebScraper.NET
 
-The project is still in beta, i will graduate it once it reaches an acceptable state
+## Usage
 
-## Example Usage
-You can run the [TestSampleSite.cs](https://github.com/perusworld/WebScraper.NET/blob/master/WebScraper.NET%20Test/TestSampleSite.cs) in the Test project or the following
+### Install
+Install the library using nuget package manager (search for WebScraper.NET) or using Package Manager Console
+```bash
+Install-Package WebScraper.NET
+```
+
+
+### Sample Code
+
+Import Namespace
+```c#
+using WebScraper.Web;
+```
+
+Create a form with a WebBrowser control
 
 You need to build the actions that you want to do, for example
 ```c#
