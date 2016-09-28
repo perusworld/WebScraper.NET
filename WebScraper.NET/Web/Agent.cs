@@ -54,6 +54,11 @@ namespace WebScraper.Web
 
     }
 
+    public interface AgentCallback
+    {
+        void onCompleted(Agent agent);
+    }
+
     public abstract class Agent
     {
 
@@ -69,17 +74,17 @@ namespace WebScraper.Web
 
         public Boolean MonitorTimings { get; set; }
 
+        public AgentCallback AgentCallback { get; set; }
+
         protected Stack<AccessTiming> AccessTimes { get; set; }
 
         protected WebAction activeAction;
 
+        protected Queue<WebAction> activeActions;
+
         protected WebBrowserDocumentCompletedEventHandler completedEventHandler;
 
         protected WebBrowserDocumentCompletedEventHandler completedEventHandlerForTiming;
-
-        protected AutoResetEvent trigger;
-
-        protected WaitHandle[] waitHandles;
 
         public DateTime LastedUpdated { get; private set; }
 
@@ -97,8 +102,6 @@ namespace WebScraper.Web
         {
             RequestContext = new Dictionary<string, object>();
             Outputs = new Dictionary<string, object>();
-            trigger = new AutoResetEvent(false);
-            waitHandles = new WaitHandle[] { trigger };
             if (MonitorTimings)
             {
                 completedEventHandlerForTiming = new WebBrowserDocumentCompletedEventHandler(this.pageLoadedForMonitoring);
@@ -107,35 +110,68 @@ namespace WebScraper.Web
             }
         }
 
-        public virtual void doActions(List<WebAction> actions)
+        static void scheduleAction(object stateInfo)
         {
-            completedEventHandler = new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
-            WebBrowser.DocumentCompleted += completedEventHandler;
-            Queue<WebAction> activeActions = new Queue<WebAction>(actions);
-            while (0 < activeActions.Count)
+            Tuple<WebAction, Agent> actionInfo = (Tuple<WebAction, Agent>)stateInfo;
+            actionInfo.Item1.doAction(actionInfo.Item2);
+        }
+        static void scheduleNextAction(object stateInfo)
+        {
+            Tuple<Agent> actionInfo = (Tuple<Agent>)stateInfo;
+            actionInfo.Item1.doNextAction();
+        }
+
+        public void doAction()
+        {
+            if (activeAction.isWaitForEvent())
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(scheduleAction), Tuple.Create(activeAction, this));
+                //Wait
+            }
+            else
+            {
+                activeAction.doAction(this);
+                ThreadPool.QueueUserWorkItem(new WaitCallback(scheduleNextAction), Tuple.Create(this));
+            }
+        }
+
+        public virtual void doNextAction()
+        {
+            if (0 < activeActions.Count)
             {
                 activeAction = activeActions.Dequeue();
                 if (activeAction.canDoAction(this))
                 {
                     if (activeAction.shouldWaitAction(this))
                     {
-                        trigger.Reset();
-                        WaitHandle.WaitAny(waitHandles);
+                        //Wait
                     }
-                    activeAction.doAction(this);
-                    if (activeAction.isWaitForEvent())
+                    else
                     {
-                        trigger.Reset();
-                        WaitHandle.WaitAny(waitHandles);
+                        doAction();
                     }
                 }
+            } else
+            {
+                completedActions();
             }
-            completedActions();
+
+        }
+        public virtual void doActions(List<WebAction> actions)
+        {
+            completedEventHandler = new WebBrowserDocumentCompletedEventHandler(this.pageLoaded);
+            WebBrowser.DocumentCompleted += completedEventHandler;
+            activeActions = new Queue<WebAction>(actions);
+            doNextAction();
         }
 
         public virtual void completedActions()
         {
             WebBrowser.DocumentCompleted -= completedEventHandler;
+            if (null != this.AgentCallback)
+            {
+                this.AgentCallback.onCompleted(this);
+            }
         }
 
         public virtual void cleanup()
@@ -149,7 +185,7 @@ namespace WebScraper.Web
 
         public virtual void completedWaitAction()
         {
-            trigger.Set();
+            ThreadPool.QueueUserWorkItem(new WaitCallback(scheduleAction), Tuple.Create(activeAction, this));
         }
 
         public virtual bool validateActiveAction()
@@ -158,7 +194,7 @@ namespace WebScraper.Web
             if (null != activeAction && activeAction.isWaitForEvent() && activeAction.validate(this))
             {
                 ret = true;
-                trigger.Set();
+                doNextAction();
             }
             return ret;
         }
@@ -191,6 +227,11 @@ namespace WebScraper.Web
                     AccessTimes.Push(new AccessTiming(url));
                 }
             }
+        }
+        public List<AccessTiming> getAccessTimings()
+        {
+            return new List<AccessTiming>(AccessTimes);
+
         }
 
         public List<AccessTiming> getDomainAccessTimings()

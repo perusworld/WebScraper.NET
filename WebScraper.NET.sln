@@ -1,7 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScraper.NET", "WebScraper.NET\WebScraper.NET.csproj", "{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScraper.NET Test", "WebScraper.NET Test\WebScraper.NET Test.csproj", "{721DD2DB-5F34-4501-B140-D07021F0B76E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6BFD0C2-9E87-4A13-9E09-2F002500F07A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{721DD2DB-5F34-4501-B140-D07021F0B76E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{721DD2DB-5F34-4501-B140-D07021F0B76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{721DD2DB-5F34-4501-B140-D07021F0B76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{721DD2DB-5F34-4501-B140-D07021F0B76E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

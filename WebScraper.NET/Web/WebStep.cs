@@ -55,7 +55,7 @@ namespace WebScraper.Web
 
     public class UrlWebStep : AbstractWebStep
     {
-        public string Url { get; set; }
+        public string UrlOrContextKey { get; set; }
         public WebValidator Validator { get; set; }
 
         public UrlWebStep()
@@ -63,15 +63,29 @@ namespace WebScraper.Web
         {
 
         }
-        public UrlWebStep(String name = null, String url = null, WebValidator validator = null)
+        public UrlWebStep(String name = null, String urlOrContextKey = null, WebValidator validator = null)
             : base(name)
         {
-            this.Url = url;
+            this.UrlOrContextKey = urlOrContextKey;
             this.Validator = validator;
         }
+
+        protected string resolveURL(Agent agent)
+        {
+            string ret = null;
+            if (agent.RequestContext.ContainsKey(UrlOrContextKey))
+            {
+                ret = agent.RequestContext[UrlOrContextKey].ToString();
+            } else
+            {
+                ret = UrlOrContextKey;
+            }
+            return ret;
+        }
+
         public override void internalExecute(Agent agent)
         {
-            agent.WebBrowser.Navigate(Url);
+            agent.WebBrowser.Navigate(resolveURL(agent));
         }
         public override bool validate(Agent agent)
         {

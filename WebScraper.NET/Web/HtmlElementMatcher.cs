@@ -26,6 +26,27 @@ namespace WebScraper.Web
         public abstract bool match(HtmlElement element);
     }
 
+    public class TagHtmlElementMatcher : AbstractHtmlElementMatcher
+    {
+        public string Tag { get; set; }
+        public TagHtmlElementMatcher()
+            : base()
+        {
+
+        }
+        public TagHtmlElementMatcher(string name = null, string tag = null)
+            : base(name)
+        {
+            Tag = tag;
+        }
+
+        public override bool match(HtmlElement element)
+        {
+            return (null != Tag && null != element && Tag.Equals(element.TagName, StringComparison.CurrentCultureIgnoreCase));
+        }
+    }
+
+
     public class AttributeHtmlElementMatcher : AbstractHtmlElementMatcher
     {
         public Regex TagValueRegex { get; set; }

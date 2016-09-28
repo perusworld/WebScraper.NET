@@ -147,7 +147,6 @@ namespace WebScraper.Web
             HtmlElement ret = null;
             if (null != document)
             {
-                List<HtmlElement> matches = new List<HtmlElement>();
                 HtmlElementCollection elements = document.GetElementsByTagName(Tag);
                 if (null != elements)
                 {
