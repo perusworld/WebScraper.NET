@@ -136,6 +136,7 @@ namespace WebScraper.Web
                         }
                         catch (Exception e)
                         {
+                            //NOOP
                         }
                         if (null == exprObj)
                         {
