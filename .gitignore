@@ -3,3 +3,5 @@
 WebScraper.NET Test/obj/
 WebScraper.NET Test/bin/
 packages/
+*.nupkg
+.vscode

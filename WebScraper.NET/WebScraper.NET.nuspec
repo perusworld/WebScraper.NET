@@ -6,12 +6,12 @@
     <title>$title$</title>
     <authors>Saravana Perumal Shanmugam</authors>
     <owners>Saravana Perumal Shanmugam</owners>
-    <licenseUrl>https://raw.githubusercontent.com/perusworld/WebScraper.NET/master/LICENSE</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/perusworld/WebScraper.NET</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>First release.</releaseNotes>
-    <copyright>Copyright 2016</copyright>
+    <releaseNotes>Expression library switch. Switch to DataBinder and remove spring core dependency.</releaseNotes>
+    <copyright>Copyright 2021</copyright>
     <tags>WebBrowser Scraper</tags>
   </metadata>
 </package>
