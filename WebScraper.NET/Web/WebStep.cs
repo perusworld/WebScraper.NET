@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Threading;
-using Spring.Expressions;
+using System.Web.UI;
 
 namespace WebScraper.Web
 {
@@ -128,7 +125,7 @@ namespace WebScraper.Web
                         Object exprObj = null;
                         try
                         {
-                            exprObj = ExpressionEvaluator.GetValue(agent, value);
+                            exprObj = DataBinder.Eval(agent, value);
                             if (null != exprObj)
                             {
                                 value = exprObj.ToString();
