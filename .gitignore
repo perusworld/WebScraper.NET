@@ -5,3 +5,4 @@ WebScraper.NET Test/bin/
 packages/
 *.nupkg
 .vscode
+.vs
