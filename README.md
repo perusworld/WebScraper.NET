@@ -1,17 +1,19 @@
 # A .Net based Web Scraper using the WebBrowser control
 
-[![nuget][nuget-badge]][nuget-url] [![Build status](https://ci.appveyor.com/api/projects/status/imhrkqa17reo84kw?svg=true)](https://ci.appveyor.com/project/perusworld/webscraper-net)
-[nuget-badge]: https://img.shields.io/badge/nuget-v2.0.3-brightgreen.svg
-[nuget-url]: https://www.nuget.org/packages/WebScraper.NET
+[![nuget](https://img.shields.io/nuget/v/WebScraper.NET)](https://www.nuget.org/packages/WebScraper.NET) [![Build status](https://ci.appveyor.com/api/projects/status/imhrkqa17reo84kw?svg=true)](https://ci.appveyor.com/project/perusworld/webscraper-net)
+
 
 ## Usage
 
 ### Install
 Install the library using nuget package manager (search for WebScraper.NET) or using Package Manager Console
 ```bash
-Install-Package WebScraper.NET
+Install-Package WebScraper.NET -Version 3.0.0
 ```
-
+Install the library using .NET CLI
+```bash
+dotnet add package WebScraper.NET --version 3.0.0
+```
 
 ### Sample Code
 
